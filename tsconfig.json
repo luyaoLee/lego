@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "module": "es2020",
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}
