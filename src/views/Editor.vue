@@ -4,7 +4,16 @@
       <el-header>Header</el-header>
       <el-container>
         <el-aside width="300px" class="component-list">Aside</el-aside>
-        <el-main>Main</el-main>
+        <el-main>
+          <div class="preview-list">
+            <component
+              v-for="item in components"
+              :key="item.id"
+              :is="item.name"
+              v-bind="item.props"
+            ></component>
+          </div>
+        </el-main>
         <el-aside width="300px" class="component-attrs">Aside</el-aside>
       </el-container>
     </el-container>
@@ -12,14 +21,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useEditorsStore } from '@/stores/editors'
+import LText from '@/components/LText.vue'
 
 export default defineComponent({
   name: 'EditorView',
-  setup() {
-    return {}
+  components: {
+    LText
   },
-  components: {}
+  setup() {
+    const store = useEditorsStore()
+    const components = computed(() => store.componets)
+    return { components }
+  }
 })
 </script>
 
