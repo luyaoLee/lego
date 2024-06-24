@@ -19,7 +19,7 @@
         </div>
       </el-main>
       <el-aside width="300px" class="component-attrs">
-        <pre>{{ currentElement && currentElement.props }}</pre>
+        <props-table v-if="currentElement" :props="currentElement.props"></props-table>
       </el-aside>
     </el-container>
   </el-container>
@@ -31,6 +31,7 @@ import { useCurrentStore, useEditorsStore, type ComponentData } from '@/stores/e
 import LText from '@/components/LText.vue'
 import ComponentList from '@/components/ComponentList.vue'
 import EditorWrapper from '@/components/EditorWrapper.vue'
+import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/defaultTemplates'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -39,7 +40,8 @@ export default defineComponent({
   components: {
     LText,
     ComponentList,
-    EditorWrapper
+    EditorWrapper,
+    PropsTable
   },
   setup() {
     const store = useEditorsStore()
