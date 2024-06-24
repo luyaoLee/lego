@@ -20,6 +20,7 @@
       </el-main>
       <el-aside width="300px" class="component-attrs">
         <props-table v-if="currentElement" :props="currentElement.props"></props-table>
+        <pre v-if="currentElement">{{ currentElement.props }}</pre>
       </el-aside>
     </el-container>
   </el-container>
@@ -82,11 +83,11 @@ export default defineComponent({
     text-align: center;
   }
   .component-list {
-    background-color: teal;
+    background-color: #f5f7fa;
     position: relative;
   }
   .component-attrs {
-    background-color: yellowgreen;
+    background-color: #f5f7fa;
   }
   .preview-list {
     position: relative;
