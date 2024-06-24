@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import { ref } from 'vue'
+import type { TextComponentProps } from '@/defaultProps'
 
 export interface EditorProps {
   components: ComponentData[]
@@ -8,7 +9,8 @@ export interface EditorProps {
 }
 
 export interface ComponentData {
-  props: { [key: string]: any }
+  // 元素的属性
+  props: Partial<TextComponentProps>
   id: string
   name: string
 }
@@ -20,6 +22,18 @@ export const useEditorsStore = defineStore('editors', () => {
     components.value.push(component)
   }
   return { components, addComponent }
+})
+
+export const useCurrentStore = defineStore('currentElement', () => {
+  const currentElement = ref<ComponentData>()
+  const store = useEditorsStore()
+  function setCurrentElement(id: string) {
+    currentElement.value = store.components.find((component) => component.id === id)
+  }
+  return {
+    currentElement,
+    setCurrentElement
+  }
 })
 
 export const testComponents: ComponentData[] = [

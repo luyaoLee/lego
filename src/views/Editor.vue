@@ -7,42 +7,51 @@
       </el-aside>
       <el-main>
         <div class="preview-list">
-          <component
+          <editor-wrapper
             v-for="item in components"
             :key="item.id"
-            :is="item.name"
-            v-bind="item.props"
-          ></component>
+            :id="item.id"
+            :active="currentElement ? currentElement.id === item.id : false"
+            @set-current-element="setCurrentElement"
+          >
+            <component :is="item.name" v-bind="item.props"></component>
+          </editor-wrapper>
         </div>
       </el-main>
-      <el-aside width="300px" class="component-attrs"></el-aside>
+      <el-aside width="300px" class="component-attrs">
+        <pre>{{ currentElement && currentElement.props }}</pre>
+      </el-aside>
     </el-container>
   </el-container>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { useEditorsStore, type ComponentData } from '@/stores/editors'
+import { useCurrentStore, useEditorsStore, type ComponentData } from '@/stores/editors'
 import LText from '@/components/LText.vue'
 import ComponentList from '@/components/ComponentList.vue'
+import EditorWrapper from '@/components/EditorWrapper.vue'
 import { defaultTextTemplates } from '@/defaultTemplates'
-import { useCounterStore } from '@/stores/counter'
-import { storeToRefs } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 
 export default defineComponent({
   name: 'EditorView',
   components: {
     LText,
-    ComponentList
+    ComponentList,
+    EditorWrapper
   },
   setup() {
     const store = useEditorsStore()
     const components = computed(() => store.components)
+    const currentStore = useCurrentStore()
+    const currentElement = computed(() => currentStore.currentElement)
     return {
       components,
       defaultTextTemplates,
-      addComponent: store.addComponent
+      addComponent: store.addComponent,
+      currentElement,
+      setCurrentElement: currentStore.setCurrentElement
     }
   },
   methods: {
