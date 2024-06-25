@@ -2,7 +2,12 @@
   <div class="props-table">
     <div class="prop-item" v-for="(value, key) in finalProps" :key="key">
       <span class="label">{{ value?.label }}</span>
-      <component v-if="value" :is="value.component" v-model="value.value" v-bind="value.extraProps">
+      <component
+        :is="value.component"
+        :[value.valueProp]="value.value"
+        v-bind="value.extraProps"
+        v-on="value.events"
+      >
         <template v-if="value.options">
           <component
             v-for="item in value.options"
@@ -19,9 +24,23 @@
 <script lang="ts">
 import { mapPropsToForms } from '@/propsMap'
 import { reduce } from 'lodash-es'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import type { TextComponentProps } from '@/defaultProps'
-import type { PropsToForms } from '@/propsMap'
+import type { PropToForm } from '@/propsMap'
+
+// 这里是处理数据时添加的一些额外属性
+interface FormProps extends PropToForm {
+  // 表单项的默认值
+  value: string
+  // 自定义绑定属性名，默认值为： model-value
+  valueProp: string
+  // 自定义事件名，默认值为：change
+  eventName: string
+  // 自定义事件处理函数
+  events: {
+    [key: string]: (val: any) => void
+  }
+}
 
 export default defineComponent({
   name: 'props-table',
@@ -32,7 +51,10 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  // 组件属性更改时通知父组件
+  emits: ['change', 'input'],
+  setup(props, { emit }) {
+    const count = ref(0)
     const finalProps = computed(() => {
       return reduce(
         props.props,
@@ -41,15 +63,32 @@ export default defineComponent({
           const newKey = key as keyof TextComponentProps
           const item = mapPropsToForms[newKey]
           if (item) {
-            item.value = item.dataTypeTransformer ? item.dataTypeTransformer(value) : value
-            result[newKey] = item
+            const {
+              valueProp = 'model-value',
+              eventName = 'update:model-value',
+              initTransformer,
+              afterTransformer
+            } = item
+            const newItem: FormProps = {
+              ...item,
+              value: initTransformer ? initTransformer(value) : value,
+              valueProp,
+              eventName,
+              events: {
+                [eventName]: (e: any) => {
+                  emit('change', { key, value: afterTransformer ? afterTransformer(e) : e })
+                }
+              }
+            }
+            result[newKey] = newItem
           }
           return result
         },
-        {} as PropsToForms
+        {} as { [key: string]: FormProps }
       )
     })
     return {
+      count,
       finalProps
     }
   }

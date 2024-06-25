@@ -30,9 +30,16 @@ export const useCurrentStore = defineStore('currentElement', () => {
   function setCurrentElement(id: string) {
     currentElement.value = store.components.find((component) => component.id === id)
   }
+
+  function updateCurrentElement(newVal: any) {
+    if (currentElement.value) {
+      currentElement.value.props = newVal
+    }
+  }
   return {
     currentElement,
-    setCurrentElement
+    setCurrentElement,
+    updateCurrentElement
   }
 })
 

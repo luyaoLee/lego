@@ -26,6 +26,7 @@ export interface CommonComponentProps {
   right: string
 }
 
+// 通用组件属性
 export const commonDefaultProps: CommonComponentProps = {
   // actions
   actionType: '',
@@ -65,6 +66,7 @@ export interface TextComponentProps extends CommonComponentProps {
   backgroundColor: string
 }
 
+// 文本组件属性，在通用组件属性的基础上增加了文本相关的属性
 export const textDefaultProps: TextComponentProps = {
   // basic props - font styles
   text: '正文内容',
@@ -80,6 +82,7 @@ export const textDefaultProps: TextComponentProps = {
   ...commonDefaultProps
 }
 
+// 将文本组件属性转换为组件默认属性格式，给每个属性添加了type和default
 export const transformToDefaultProps = (props: TextComponentProps) => {
   // {
   //   color: {
@@ -95,4 +98,5 @@ export const transformToDefaultProps = (props: TextComponentProps) => {
   })
 }
 
+// 文本组件样式属性的key的集合，不包括text, actionType, url
 export const textStyleNames = without(Object.keys(textDefaultProps), 'text', 'actionType', 'url')

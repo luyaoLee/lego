@@ -1,10 +1,11 @@
+// 默认组件模板
 export const defaultTextTemplates = [
   {
     text: '大标题',
     fontSize: '30px',
     fontWeight: 'bold',
     tag: 'h2',
-    lineHeight: '2',
+    lineHeight: '1.7',
     textAlign: 'left',
     fontFamily: 'Microsoft YaHei'
   },
