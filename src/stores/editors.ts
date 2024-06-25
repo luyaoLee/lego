@@ -17,11 +17,17 @@ export interface ComponentData {
 
 export const useEditorsStore = defineStore('editors', () => {
   const components = ref<ComponentData[]>(testComponents)
+  const { updateCurrentElement } = useCurrentStore()
 
   function addComponent(component: ComponentData) {
     components.value.push(component)
   }
-  return { components, addComponent }
+
+  function deleteCurrentComponent(id: string) {
+    components.value = components.value.filter((component) => component.id !== id)
+    updateCurrentElement(undefined)
+  }
+  return { components, addComponent, deleteCurrentComponent }
 })
 
 export const useCurrentStore = defineStore('currentElement', () => {
@@ -32,10 +38,9 @@ export const useCurrentStore = defineStore('currentElement', () => {
   }
 
   function updateCurrentElement(newVal: any) {
-    if (currentElement.value) {
-      currentElement.value.props = newVal
-    }
+    currentElement.value = newVal
   }
+
   return {
     currentElement,
     setCurrentElement,

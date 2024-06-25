@@ -15,6 +15,7 @@
             :id="item.id"
             :active="currentElement ? currentElement.id === item.id : false"
             @set-current-element="setCurrentElement"
+            @delete-current-element="deleteCurrentComponent"
           >
             <component :is="item.name" v-bind="item.props"></component>
           </editor-wrapper>
@@ -65,7 +66,8 @@ export default defineComponent({
       // 当前画布选中的组件
       currentElement,
       setCurrentElement: currentStore.setCurrentElement,
-      updateCurrentElement: currentStore.updateCurrentElement
+      updateCurrentElement: currentStore.updateCurrentElement,
+      deleteCurrentComponent: store.deleteCurrentComponent
     }
   },
   methods: {
@@ -80,9 +82,9 @@ export default defineComponent({
     },
     // 通过右侧编辑器修改属性，触发中间画布当前元素的更新
     onChange(data: { [key: string]: any }) {
-      const { props } = this.currentElement as ComponentData
+      const { props, ...rest } = this.currentElement as ComponentData
       props[data.key as keyof TextComponentProps] = data.value
-      this.updateCurrentElement(props)
+      this.updateCurrentElement({ ...rest, props })
     }
   }
 })

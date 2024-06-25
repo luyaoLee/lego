@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LText from './LText.vue'
+import { cloneDeep } from 'lodash-es'
 
 export default defineComponent({
   name: 'component-list',
@@ -22,7 +23,7 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const onItemClick = (item: any) => {
-      ctx.emit('on-item-click', item)
+      ctx.emit('on-item-click', cloneDeep(item))
     }
     return { onItemClick }
   }
